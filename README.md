@@ -1,395 +1,266 @@
-# 📱 Ultimate Expo & React Native Handbook
+# 🧠 react-native-daily
 
-[![Last Updated](https://img.shields.io/badge/Last_Updated-2026--02--20-blue.svg)](#-changelog)
+![Updated Daily](https://img.shields.io/badge/Updated-Daily-brightgreen)
+![Expo SDK Latest](https://img.shields.io/badge/Expo%20SDK-55%20(Beta)-blue)
+![React Native Latest](https://img.shields.io/badge/React%20Native-0.84-cyan)
+![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-orange)
 
-> **⚡ TL;DR:** The only resource you need to go from zero to production with Expo and React Native.
+The single deepest repository for Expo & React Native mastery. Zero fluff. Pure implementation. Covering everything from Level 0 to Staff/Architect level.
 
 ---
 
-## 1️⃣ Quick Start
-> **⚡ TL;DR:** Get up and running in under 5 minutes.
+## 📋 Table of Contents
+- [🟢 LEVEL 0 — ABSOLUTE BEGINNER](#-level-0--absolute-beginner)
+- [🟡 LEVEL 1 — BEGINNER](#-level-1--beginner)
+- [🟠 LEVEL 2 — INTERMEDIATE](#-level-2--intermediate)
+- [🔴 LEVEL 3 — ADVANCED](#-level-3--advanced)
+- [🟣 LEVEL 4 — PRODUCTION & DEPLOYMENT](#-level-4--production--deployment)
+- [⚫ LEVEL 5 — STAFF / ARCHITECT LEVEL](#-level-5--staff--architect-level)
+- [⚡ MASTER COMMAND REFERENCE](#-master-command-reference)
+- [✂️ THE SNIPPET VAULT](#-the-snippet-vault)
+- [🐛 DEBUGGING GOLDBANK](#-debugging-goldbank)
 
+---
+
+# 🟢 LEVEL 0 — ABSOLUTE BEGINNER
+**Difficulty:** 🟢 Beginner | **Badge:** � Newbie
+
+## A — What is React Native & Expo?
+- **React Native:** A framework that compiles JavaScript to native platform primitives. It is NOT a webview.
+- **Expo:** A full-featured framework built on top of React Native. It handles the "native" complexity for you using a Managed Workflow.
+- **EAS:** Cloud build and submission suite.
+- **Decision:** In 2026, 99.9% of apps should start with Expo.
+
+## B — Environment Setup (Mac/Win/Linux)
+1. **Node.js (LTS v22+):** `brew install node`
+2. **Watchman:** `brew install watchman` (Mac only, avoids file sync errors).
+3. **Ruby & Cocoapods:** `sudo gem install cocoapods` (Required for iOS local builds).
+4. **IDEs:** VS Code + [Expo Tools Extension] is the industry standard.
+
+## C — First App in 5 Minutes (Implementation)
 ```bash
-# Install Expo CLI and create a new project
-npx create-expo-app@latest my-app
-cd my-app
-
-# Start the development server
+npx create-expo-app@latest MyApp --template blank-typescript
+cd MyApp
 npx expo start
 ```
+- **Structure:**
+  - `/app`: Files for Expo Router.
+  - `app.json`: Global configuration.
+  - `node_modules`: Dependencies.
 
-**Shortcuts (Press in terminal):**
-- `r` - Reload app
-- `m` - Toggle developer menu
-- `i` - Open in iOS simulator
-- `a` - Open in Android emulator
-- `w` - Open in web browser
-
-*Scan the QR code with the **Expo Go** app (Android) or Camera app (iOS) to run on a physical device.*
+## D — JS/TS Essentials
+- **Arrow Functions:** `const Component = () => ...`
+- **Optional Chaining:** `user?.profile?.id`
+- **Destructuring:** `const { item } = props;`
+- **Async/Await:** `const res = await api.get();`
 
 ---
 
-## 2️⃣ Project Structure
-> **⚡ TL;DR:** Standard Expo Router file-based routing structure.
+# 🟡 LEVEL 1 — BEGINNER
+**Difficulty:** 🟡 Intermediate | **Badge:** 🧱 Builder
 
+## E — Core Components Deep Dive
+
+### 1. View
+- **What:** The equivalent of `<div>`.
+- **When:** Layout, grouping, containers.
+- **Key Props:** `style`, `onLayout`, `pointerEvents`.
+```tsx
+<View style={{ flex: 1, backgroundColor: '#f0f0f0' }}> ... </View>
+```
+
+### 2. Text
+- **What:** The only way to show strings.
+- **When:** Any typography.
+- **Key Props:** `numberOfLines`, `selectable`, `ellipsizeMode`.
+```tsx
+<Text numberOfLines={2} style={{ fontSize: 18 }}>Truncated long text...</Text>
+```
+
+### 3. Image
+- **What:** Displays local/remote images.
+- **When:** Photos, icons, backgrounds.
+- **Key Props:** `source`, `resizeMode`, `onLoad`.
+```tsx
+<Image source={{ uri: 'https://...' }} style={{ width: 100, height: 100 }} />
+```
+
+### 4. FlatList (Performance Lists)
+- **What:** Optimized list renderer.
+- **When:** Any list longer than 10 items.
+- **Key Props:** `data`, `renderItem`, `keyExtractor`, `initialNumToRender`.
+```tsx
+<FlatList
+  data={Array(100).fill({id: '1'})}
+  renderItem={({item}) => <Text>{item.id}</Text>}
+  keyExtractor={item => item.id}
+/>
+```
+
+## F — Styling: Flexbox and Dimensions
+- **Flex Direction:** `column` (default in RN), `row`.
+- **Justify Content:** `center`, `flex-start`, `space-between`, `space-around`.
+- **Align Items:** `center`, `stretch`, `flex-end`.
+- **ASCII Diagram:**
 ```text
-my-app/
-├── app/                # Expo Router file-based routes (screens)
-│   ├── (tabs)/         # Grouped routes (e.g., bottom tabs)
-│   ├── _layout.tsx     # Global layout wrapper
-│   └── index.tsx       # Entry point (Home screen)
-├── assets/             # Static files (images, fonts)
-├── components/         # Reusable UI components
-├── constants/          # Theme, colors, and config values
-├── hooks/              # Custom React hooks
-├── utils/              # Helper functions
-├── app.json            # Expo configuration file
-├── package.json        # Dependencies and scripts
-└── tsconfig.json       # TypeScript configuration
+column (Vertical)          row (Horizontal)
++-----+                    +-----------+
+| [A] |                    | [A] [B] [C] |
+| [B] |                    +-----------+
+| [C] |
++-----+
 ```
+
+## G — Hooks Masterclass
+
+| Hook | Definition | When to Use | Code Snippet |
+|------|------------|-------------|--------------|
+| `useState` | Local reactive state | Toggles, counters, inputs | `const [val, set] = useState(0);` |
+| `useEffect`| Lifecycle management | API calls, subscriptions | `useEffect(() => { load() }, []);` |
+| `useRef` | Direct reference | Input focus, animation vals | `const inputRef = useRef(null);` |
+| `useMemo` | Cached value | Heavy calculations | `const val = useMemo(() => calc(a), [a]);` |
 
 ---
 
-## 3️⃣ Core Concepts Cheatsheet
-> **⚡ TL;DR:** Essential React Native components and their web equivalents.
+# 🟠 LEVEL 2 — INTERMEDIATE
+**Difficulty:** 🟠 Advanced | **Badge:** 🚀 Rocket
 
-| Component | What it does | Example |
-|-----------|--------------|---------|
-| `View` | Container (like `div`) | `<View style={styles.container}>...</View>` |
-| `Text` | Displays text (like `p` or `span`) | `<Text>Hello World</Text>` |
-| `Image` | Displays images | `<Image source={{uri: '...'}} />` |
-| `ScrollView` | Scrollable container | `<ScrollView>...</ScrollView>` |
-| `FlatList` | Performant list for large data | `<FlatList data={data} renderItem={...} />` |
-| `TouchableOpacity` | Button that dims on press | `<TouchableOpacity onPress={...}>...</TouchableOpacity>` |
-| `Pressable` | Modern, customizable button | `<Pressable onPress={...}>...</Pressable>` |
-| `TextInput` | Input field | `<TextInput value={text} onChangeText={...} />` |
-| `Modal` | Overlay screen | `<Modal visible={true}>...</Modal>` |
-| `SafeAreaView` | Avoids notches/status bars | `<SafeAreaView>...</SafeAreaView>` |
-| `KeyboardAvoidingView` | Moves content above keyboard | `<KeyboardAvoidingView behavior="padding">...</KeyboardAvoidingView>` |
-| `StatusBar` | Controls device status bar | `<StatusBar style="auto" />` |
-
----
-
-## 4️⃣ Styling Cheatsheet
-> **⚡ TL;DR:** Use `StyleSheet.create` for performance, or NativeWind for Tailwind utility classes.
-
-**StyleSheet vs Inline:**
+## H — Navigation: Expo Router (The 2026 Way)
+- **File-based Routing:** Folders/files in `/app` map to URLs.
+- **Tabs Layout:**
 ```tsx
-// Good (Cached, performant)
-const styles = StyleSheet.create({ text: { color: 'red' } });
-<Text style={styles.text}>Hello</Text>
-
-// Bad (Recreated every render)
-<Text style={{ color: 'red' }}>Hello</Text>
+// app/(tabs)/_layout.tsx
+import { Tabs } from 'expo-router';
+export default () => <Tabs />;
 ```
+- **Dynamic Routes:** `app/user/[id].tsx` accessible via `useLocalSearchParams()`.
+- **Linking:** `import { Link } from 'expo-router';`
 
-**Flexbox Quick Reference:**
-| Property | What it does | Common Values |
-|----------|--------------|---------------|
-| `flexDirection` | Main axis direction | `'column'` (default), `'row'` |
-| `justifyContent` | Align along main axis | `'flex-start'`, `'center'`, `'space-between'` |
-| `alignItems` | Align along cross axis | `'stretch'` (default), `'center'`, `'flex-start'` |
-| `flex` | Grow to fill space | `1` (fill available), `0` (auto) |
-
-**NativeWind (Tailwind) Usage:**
-```tsx
-import { View, Text } from 'react-native';
-// Just use className!
-export default () => (
-  <View className="flex-1 items-center justify-center bg-white">
-    <Text className="text-xl font-bold text-blue-500">Tailwind in RN!</Text>
-  </View>
-);
-```
-
----
-
-## 5️⃣ Navigation (Expo Router)
-> **⚡ TL;DR:** File-based routing. Folders/files become URLs.
-
-**File Structure:**
-```text
-app/
-├── _layout.tsx         # Stack navigator
-├── index.tsx           # '/'
-└── details/[id].tsx    # '/details/1'
-```
-
-**Stack Layout (`app/_layout.tsx`):**
-```tsx
-import { Stack } from 'expo-router';
-
-export default function Layout() {
-  return (
-    <Stack>
-      <Stack.Screen name="index" options={{ title: 'Home' }} />
-      <Stack.Screen name="details/[id]" options={{ title: 'Details' }} />
-    </Stack>
-  );
-}
-```
-
-**Dynamic Routes & Linking (`app/index.tsx`):**
-```tsx
-import { Link, router } from 'expo-router';
-import { View, Button } from 'react-native';
-
-export default function Home() {
-  return (
-    <View>
-      {/* Declarative */}
-      <Link href="/details/42">Go to Details</Link>
-      {/* Imperative */}
-      <Button title="Go" onPress={() => router.push('/details/42')} />
-    </View>
-  );
-}
-```
-
-**Reading Params (`app/details/[id].tsx`):**
-```tsx
-import { useLocalSearchParams } from 'expo-router';
-import { Text } from 'react-native';
-
-export default function Details() {
-  const { id } = useLocalSearchParams();
-  return <Text>Details for ID: {id}</Text>;
-}
-```
-
----
-
-## 6️⃣ State Management
-> **⚡ TL;DR:** Use `useState` for local state, Zustand for global state.
-
-**When to use what:**
-- `useState`: Simple, component-local state (e.g., form inputs, toggles).
-- `useReducer`: Complex local state with multiple sub-values.
-- `Zustand`: Global state (user session, theme, cart).
-
-**Zustand Setup (< 10 lines):**
-```tsx
+## I — State Management: Zustand vs TanStack
+- **Zustand (Global Store):**
+```typescript
 import { create } from 'zustand';
-
 const useStore = create((set) => ({
-  count: 0,
-  inc: () => set((state) => ({ count: state.count + 1 })),
+  bears: 0,
+  increase: () => set((state) => ({ bears: state.bears + 1 })),
 }));
-
-// Usage in component
-const { count, inc } = useStore();
+```
+- **TanStack Query (Async Cache):**
+```typescript
+const { data, isLoading } = useQuery({ queryKey: ['users'], queryFn: fetchUsers });
 ```
 
----
+## J — Data Fetching: API Patterns
+- **Axios Interceptors:** Global token injection.
+- **Error Handling:** Centralized logging with Sentry.
+- **Offline First:** Cache query data with `persistQueryClient`.
 
-## 7️⃣ Data Fetching
-> **⚡ TL;DR:** Use TanStack Query for caching, loading states, and retries.
-
-**TanStack Query Setup:**
+## K — Forms: React Hook Form + Zod
+- **Validation:** Type-safe forms with `zodResolver`.
 ```tsx
-import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query';
-
-const queryClient = new QueryClient();
-
-export default function App() {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <MyComponent />
-    </QueryClientProvider>
-  );
-}
+const schema = z.object({ email: z.string().email() });
+const { control, handleSubmit } = useForm({ resolver: zodResolver(schema) });
 ```
 
-**useQuery Example:**
+---
+
+# 🔴 LEVEL 3 — ADVANCED
+**Difficulty:** 🔴 Expert | **Badge:** 🪄 Wizard
+
+## M — Animations: Reanimated 3
+- **Shared Values:** `useSharedValue(0)` - Runs on UI thread.
+- **Animated Styles:** `useAnimatedStyle(() => ({ opacity: withTiming(sv.value) }))`.
+- **Springs:** `withSpring(1, { damping: 10 })`.
+
+## N — Gestures: Gesture Handler (RNGH)
+- **PanGesture:** Drag items around.
+- **TapGesture:** Complex double/triple tap logic.
 ```tsx
-function MyComponent() {
-  const { data, isLoading, error } = useQuery({
-    queryKey: ['todos'],
-    queryFn: () => fetch('https://api.example.com/todos').then(res => res.json()),
-  });
+const pan = Gesture.Pan().onUpdate((e) => { offset.value = e.translationX; });
+```
 
-  if (isLoading) return <Text>Loading...</Text>;
-  if (error) return <Text>Error: {error.message}</Text>;
+## O — Performance Optimization
+- **FlashList:**shopify/flash-list. 10x faster than FlatList.
+- **VirtualizedList:** Rule of thumb - don't nest ScrollViews.
+- **Hermes:** Check `global.HermesInternal` to ensure bytecode execution.
 
-  return <FlatList data={data} renderItem={({item}) => <Text>{item.title}</Text>} />;
-}
+## P — Native Modules & Nitro
+- **Expo Modules API:** Swift/Kotlin code wrapped in TS.
+- **Nitro Modules (2026):** Zero-bridge native calls via JSI/C++.
+
+---
+
+# 🟣 LEVEL 4 — PRODUCTION & DEPLOYMENT
+**Difficulty:** 🟣 Staff | **Badge:** 🚢 Captain
+
+## R — EAS: Build, Submit, Update
+- **Builds:** `eas build --platform all --profile production`.
+- **Updates:** `eas update`. Pushes bugfixes to users instantly.
+- **Store Submission:** `eas submit`. Automated Play/App Store logic.
+
+## S — Security Best Practices
+- **SecureStore:** For JWTs and sensitive data.
+- **Certificate Pinning:** Protect against Man-in-the-Middle.
+- **JSCore Isolation:** Prevent script injection.
+
+## U — Auth Flows: Social + JWT
+- `expo-auth-session` is the gold standard for Google/Apple/Facebook login.
+
+---
+
+# ⚫ LEVEL 5 — STAFF / ARCHITECT LEVEL
+**Difficulty:** ⚫ Architect | **Badge:** 🏛️ Architect
+
+## W — Architecture: Feature-Sliced Design
+- `src/features/feature-name`
+  - `/api`
+  - `/components`
+  - `/hooks`
+  - `/store`
+
+## X — Testing Strategy
+- **Jest:** Unit testing logic.
+- **React Native Testing Library (RNTL):** Component interaction tests.
+- **Maestro:** E2E user flow tests (Recommended over Detox in 2026).
+
+---
+
+# ⚡ MASTER COMMAND REFERENCE
+
+| Command | Definition |
+|---------|------------|
+| `npx expo install <pkg>` | Installs version-synced package |
+| `npx expo doctor` | Checks SDK/dependency health |
+| `npx expo prebuild` | Generates /ios and /android folders |
+| `eas build:list` | Show cloud build history |
+
+---
+
+# ✂️ THE SNIPPET VAULT
+**Haptic Trigger:**
+```typescript
+import * as Haptics from 'expo-haptics';
+Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+```
+
+**Dark Mode Hook:**
+```typescript
+const colorScheme = useColorScheme();
+const isDark = colorScheme === 'dark';
 ```
 
 ---
 
-## 8️⃣ Common Hooks Cheatsheet
-> **⚡ TL;DR:** Essential React and Expo Router hooks.
-
-| Hook | Purpose | One-liner example |
-|------|---------|-------------------|
-| `useState` | Local state | `const [count, setCount] = useState(0);` |
-| `useEffect` | Side effects | `useEffect(() => { fetch() }, []);` |
-| `useRef` | Mutable ref / DOM access | `const inputRef = useRef(null);` |
-| `useCallback` | Memoize functions | `const memoizedCb = useCallback(() => doSomething(a), [a]);` |
-| `useMemo` | Memoize values | `const memoizedVal = useMemo(() => compute(a), [a]);` |
-| `useContext` | Consume context | `const theme = useContext(ThemeContext);` |
-| `useFocusEffect` | Run when screen focused | `useFocusEffect(useCallback(() => { /* focused */ }, []));` |
-| `useNavigation` | Imperative navigation | `const navigation = useNavigation(); navigation.goBack();` |
-| `useLocalSearchParams` | Get route params | `const { id } = useLocalSearchParams();` |
+# 🐛 DEBUGGING GOLDBANK
+- **Issue:** `Network Request Failed` (Android).
+- **Fix:** Map `localhost` to `10.0.2.2`.
+- **Issue:** `Invariant Violation: Text strings must be rendered within a <Text> component`.
+- **Fix:** Wrap floating text or comments `{} // comment` inside `<Text>`.
 
 ---
 
-## 9️⃣ Expo APIs Cheatsheet
-> **⚡ TL;DR:** Access native device features easily.
-
-| API | Import | What it does |
-|-----|--------|--------------|
-| `expo-camera` | `import { Camera } from 'expo-camera'` | Take photos and record videos |
-| `expo-location` | `import * as Location from 'expo-location'` | Get GPS coordinates and geofencing |
-| `expo-notifications` | `import * as Notifications from 'expo-notifications'` | Push and local notifications |
-| `expo-image-picker` | `import * as ImagePicker from 'expo-image-picker'` | Select images/videos from gallery |
-| `expo-secure-store` | `import * as SecureStore from 'expo-secure-store'` | Encrypted key-value storage (tokens) |
-| `expo-file-system` | `import * as FileSystem from 'expo-file-system'` | Read/write files to device storage |
-| `expo-av` | `import { Audio, Video } from 'expo-av'` | Play audio and video |
-| `expo-sensors` | `import { Accelerometer } from 'expo-sensors'` | Access device sensors (gyro, accel) |
-| `expo-haptics` | `import * as Haptics from 'expo-haptics'` | Trigger device vibrations |
-| `expo-clipboard` | `import * as Clipboard from 'expo-clipboard'` | Read/write to device clipboard |
-| `expo-font` | `import * as Font from 'expo-font'` | Load custom fonts |
-| `expo-splash-screen` | `import * as SplashScreen from 'expo-splash-screen'` | Control splash screen visibility |
-| `expo-linking` | `import * as Linking from 'expo-linking'` | Deep linking and opening URLs |
-| `expo-constants` | `import Constants from 'expo-constants'` | System info (manifest, device ID) |
-| `expo-device` | `import * as Device from 'expo-device'` | Device hardware info (model, OS) |
+## 🏗️ Contributing
+PRs must include: Level, Section, and Definition -> Usage -> Code block.
 
 ---
-
-## 🔟 Keyboard Shortcuts & CLI Commands
-> **⚡ TL;DR:** Essential commands for development and building.
-
-| Command | What it does |
-|---------|--------------|
-| `npx expo start` | Start Metro bundler |
-| `npx expo start -c` | Start and clear cache |
-| `npx expo install [pkg]` | Install package with compatible version |
-| `npx expo prebuild` | Generate native android/ios directories |
-| `eas build -p ios` | Build for iOS |
-| `eas build -p android` | Build for Android |
-| `eas submit -p ios` | Submit to App Store |
-| `eas update` | Publish OTA update |
-
-**Metro Bundler Shortcuts:**
-- `r` - Reload
-- `m` - Toggle menu
-- `shift + m` - Performance monitor
-- `j` - Open debugger
-
----
-
-## 1️⃣1️⃣ Debugging Tips
-> **⚡ TL;DR:** Tools and techniques to fix bugs fast.
-
-- **Tools:** Use React Native Debugger, Flipper, or Chrome DevTools (press `j` in Metro).
-- **Console:** `console.log(JSON.stringify(obj, null, 2))` for readable objects.
-- **Error Boundaries:** Wrap your app to catch render errors gracefully.
-
-**Common Errors & Fixes:**
-| Error | Fix |
-|-------|-----|
-| `Invariant Violation: View config not found` | You rendered a string outside a `<Text>` component. |
-| `Cannot read property 'X' of undefined` | Check for nulls before accessing properties (use `?.`). |
-| `Metro bundler stuck / weird caching issues` | Run `npx expo start -c` to clear cache. |
-| `EAS Build fails on iOS` | Check provisioning profiles and certificates in Expo dashboard. |
-
----
-
-## 1️⃣2️⃣ Performance Tips
-> **⚡ TL;DR:** Keep your app running at 60fps.
-
-- **FlatList Optimization:**
-  ```tsx
-  <FlatList
-    data={data}
-    keyExtractor={(item) => item.id}
-    getItemLayout={(data, index) => ({ length: 50, offset: 50 * index, index })}
-    windowSize={5} // Render fewer items off-screen
-  />
-  ```
-- **useMemo / useCallback:** Use only for expensive calculations or when passing props to memoized child components. Don't overuse.
-- **Animations:** Use `react-native-reanimated` instead of `Animated` for complex, 60fps animations that run on the UI thread.
-
----
-
-## 1️⃣3️⃣ EAS Build & Deployment
-> **⚡ TL;DR:** Build and deploy to app stores using Expo Application Services.
-
-**Quick Commands:**
-```bash
-eas login
-eas build:configure
-eas build --platform all
-eas submit --platform all
-```
-
-**app.json Key Fields:**
-```json
-{
-  "expo": {
-    "name": "MyApp",
-    "slug": "my-app",
-    "version": "1.0.0",
-    "ios": { "bundleIdentifier": "com.company.myapp" },
-    "android": { "package": "com.company.myapp" }
-  }
-}
-```
-
-**OTA Updates:**
-Run `eas update --branch preview` to push instant updates to users without app store review.
-
----
-
-## 1️⃣4️⃣ Testing
-> **⚡ TL;DR:** Ensure reliability with Jest and Detox.
-
-**Jest + Testing Library Setup:**
-```bash
-npx expo install jest-expo @testing-library/react-native
-```
-
-**Working Test Example (`App.test.tsx`):**
-```tsx
-import { render, screen } from '@testing-library/react-native';
-import App from './App';
-
-test('renders hello world', () => {
-  render(<App />);
-  expect(screen.getByText('Hello World')).toBeTruthy();
-});
-```
-
-**Detox (E2E) Setup:**
-```bash
-npm install -g detox-cli && npm install detox --save-dev
-```
-
----
-
-## 1️⃣5️⃣ Best Practices & Folder Patterns
-> **⚡ TL;DR:** Structure for scale and maintainability.
-
-- **Absolute Imports:** Configure `tsconfig.json` to use `@/components/Button` instead of `../../components/Button`.
-  ```json
-  "compilerOptions": {
-    "baseUrl": ".",
-    "paths": { "@/*": ["./*"] }
-  }
-  ```
-- **Environment Variables:** Use `.env` files. Expo automatically loads variables prefixed with `EXPO_PUBLIC_`.
-  ```env
-  EXPO_PUBLIC_API_URL=https://api.example.com
-  ```
-- **TypeScript:** Always use TS. Define interfaces for your API responses and component props.
-
----
-
-## 🗓️ Last Updated: 2026-02-20
-
-### CHANGELOG
-
-| Date | What changed |
-|------|--------------|
-| 2026-02-20 | Initial creation of the Ultimate Expo & React Native Handbook. |
+*Maintained by the React Native Daily Staff. Feb 21, 2026.*
