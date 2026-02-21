@@ -1,69 +1,161 @@
-# Chapter 1: Fundamentals & Setup
+# Chapter 1 — Fundamentals & Setup
 
-**TL;DR**
-- Use `create-expo-app` (never `expo init`).
-- Understand the difference between Expo Go, Dev Client, and Bare Workflow.
-- Master the project structure, `app.json`, and TypeScript config.
+> **TL;DR**
+> - Use `npx create-expo-app@latest` — `expo init` is deprecated.
+> - Expo Go is for prototyping. Dev Client is for production. Bare workflow is for escape hatches.
+> - `app.config.ts` is more powerful than `app.json` — use it from day one.
 
-## Setup Commands
+📚 [Expo Docs](https://docs.expo.dev/) · 🔗 [expo/expo](https://github.com/expo/expo) · 🔗 [expo/examples](https://github.com/expo/examples)
 
-⚠️ **Deprecated:** `expo init`
-✅ **Current:** `npx create-expo-app@latest`
+---
+
+## Creating a New Project
+
+⚠️ `expo init` is **deprecated**. Use `create-expo-app`.
 
 ```bash
-# Create a new project with TypeScript and Expo Router
-npx create-expo-app@latest my-app --template tabs
+# Create a new Expo app with the default template (includes Expo Router, TypeScript)
+npx create-expo-app@latest my-app
+
+# Create with a specific template
+npx create-expo-app@latest my-app --template blank-typescript
+
+# Start the dev server
 cd my-app
 npx expo start
 ```
 
-## Workflows Explained
+What each command does:
+- `create-expo-app`: Scaffolds the project, installs deps, sets up TypeScript.
+- `npx expo start`: Boots **Metro Bundler**, which compiles your TS/JS and serves it to your connected device or simulator.
 
-1. **Expo Go:** Great for quick prototyping. Limited to pre-compiled native modules.
-2. **Development Builds (Dev Client):** The standard for production apps. Allows custom native code while keeping the Expo DX.
-3. **Bare Workflow:** You manage the native `ios` and `android` folders directly. Use only if absolutely necessary.
+---
 
-## Folder Structure
+## Expo Go vs Dev Client vs Bare Workflow
 
-```text
-my-app/
-├── app/               # Expo Router file-based routing
-├── assets/            # Images, fonts, etc.
-├── components/        # Reusable UI components
-├── constants/         # Theme, colors, config
-├── app.json           # Expo configuration
-├── package.json       # Dependencies
-└── tsconfig.json      # TypeScript config
+| Feature | Expo Go | Dev Client | Bare Workflow |
+|---------|---------|------------|---------------|
+| Setup time | 0 min | 5 min | 30+ min |
+| Custom native code | ❌ | ✅ | ✅ |
+| Native modules (MMKV, etc.) | ❌ | ✅ | ✅ |
+| OTA updates | ✅ | ✅ | Manual |
+| Use case | Prototyping | Production | Escape hatch |
+
+**Rule of thumb:** Start with Expo Go. Switch to Dev Client the moment you need a single native module not in Expo SDK. Use Bare Workflow only if you're forking native code.
+
+```bash
+# Create a development build (Dev Client)
+npx expo install expo-dev-client
+eas build --profile development --platform ios
 ```
 
-## Configuration (`app.json` / `app.config.ts`)
+---
 
-Use `app.json` for static config, or `app.config.ts` if you need environment variables.
+## Full Folder Structure
+
+After `create-expo-app` with the default template:
+
+```
+my-app/
+├── app/                    # Expo Router — file-based routing
+│   ├── (tabs)/             # Tab group layout
+│   │   ├── _layout.tsx     # Tab navigator config
+│   │   ├── index.tsx       # Home screen ("/")
+│   │   └── explore.tsx     # Explore screen ("/explore")
+│   ├── _layout.tsx         # Root layout (providers, fonts, splash)
+│   └── +not-found.tsx      # 404 catch-all
+├── assets/                 # Static assets (images, fonts)
+├── components/             # Reusable components
+├── constants/              # Theme colors, config values
+├── hooks/                  # Custom hooks
+├── app.json                # Static config (or app.config.ts)
+├── babel.config.js         # Babel preset (babel-preset-expo)
+├── package.json
+└── tsconfig.json           # TypeScript config
+```
+
+**Key rules:**
+- Files in `app/` become routes. `app/settings.tsx` → `/settings`.
+- `_layout.tsx` wraps its sibling routes (think: providers, headers, tabs).
+- Underscored files (`_layout.tsx`, `+not-found.tsx`) are NOT routes.
+
+---
+
+## app.json vs app.config.ts
+
+`app.json` is static. `app.config.ts` is dynamic and lets you use environment variables and logic.
+
+### app.config.ts (recommended)
 
 ```typescript
-// app.config.ts
-import { ExpoConfig, ConfigContext } from 'expo/config';
+import { ExpoConfig, ConfigContext } from "expo/config";
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
-  name: 'MyApp',
-  slug: 'my-app',
-  version: '1.0.0',
-  orientation: 'portrait',
-  icon: './assets/icon.png',
-  userInterfaceStyle: 'light',
+  name: "My App",
+  slug: "my-app",
+  version: "1.0.0",
+  orientation: "portrait",
+  icon: "./assets/icon.png",
+  scheme: "myapp",                        // Deep linking scheme
+  userInterfaceStyle: "automatic",        // Supports dark mode
+  newArchEnabled: true,                   // Enable Fabric + TurboModules
+  splash: {
+    image: "./assets/splash-icon.png",
+    resizeMode: "contain",
+    backgroundColor: "#ffffff",
+  },
   ios: {
-    bundleIdentifier: 'com.mycompany.myapp',
+    supportsTablet: true,
+    bundleIdentifier: "com.company.myapp",
+    infoPlist: {
+      NSCameraUsageDescription: "We need camera access for photos.",
+    },
   },
   android: {
-    package: 'com.mycompany.myapp',
+    adaptiveIcon: {
+      foregroundImage: "./assets/adaptive-icon.png",
+      backgroundColor: "#ffffff",
+    },
+    package: "com.company.myapp",
+    permissions: ["CAMERA", "ACCESS_FINE_LOCATION"],
+  },
+  web: {
+    bundler: "metro",
+    output: "static",
+    favicon: "./assets/favicon.png",
+  },
+  plugins: [
+    "expo-router",
+    [
+      "expo-camera",
+      { cameraPermission: "Allow camera access for scanning." },
+    ],
+  ],
+  extra: {
+    apiUrl: process.env.API_URL ?? "https://api.example.com",
+    eas: { projectId: "your-project-id" },
   },
 });
 ```
 
+### Key fields explained
+
+| Field | Purpose |
+|-------|---------|
+| `slug` | URL-safe name, used by EAS and Expo Go |
+| `scheme` | Custom URL scheme for deep linking (`myapp://`) |
+| `newArchEnabled` | Enables the New Architecture (JSI, Fabric) |
+| `plugins` | Config plugins that modify native code at prebuild |
+| `extra` | Runtime values accessible via `expo-constants` |
+| `ios.bundleIdentifier` | Unique ID for App Store |
+| `android.package` | Unique ID for Play Store |
+
+---
+
 ## TypeScript Config
 
-Expo sets up a solid `tsconfig.json` by default. Extend it if needed:
+The default `tsconfig.json` is fine. Key settings:
 
 ```json
 {
@@ -73,23 +165,63 @@ Expo sets up a solid `tsconfig.json` by default. Extend it if needed:
     "paths": {
       "@/*": ["./*"]
     }
-  }
+  },
+  "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"]
 }
 ```
 
-## Links
-- [Expo Docs: Create a project](https://docs.expo.dev/get-started/create-a-project/)
-- [GitHub: expo/expo](https://github.com/expo/expo)
+**Path aliases** (`@/components/Button`) are supported out of the box with Expo Router. No extra Metro config needed.
+
+---
+
+## Essential CLI Commands
+
+```bash
+# Dev server
+npx expo start                       # Start Metro
+npx expo start --clear               # Start + clear Metro cache
+npx expo start --tunnel              # Use ngrok tunnel (corporate wifi)
+npx expo start --offline             # No network checks
+
+# Platform-specific
+npx expo run:ios                     # Build and run on iOS simulator
+npx expo run:android                 # Build and run on Android emulator
+
+# Dependencies
+npx expo install react-native-reanimated   # Installs Expo-compatible version
+npx expo install --fix                     # Fix mismatched versions
+
+# Diagnostics
+npx expo doctor                      # Check project health
+npx expo config --type public        # Print resolved config
+
+# Native project
+npx expo prebuild                    # Generate /ios and /android folders
+npx expo prebuild --clean            # Regenerate from scratch (destructive)
+
+# Linting
+npx expo lint                        # Run ESLint with Expo config
+```
+
+---
 
 ## ⚠️ Gotchas & Common Errors
 
-- **Error:** `Cannot find module 'expo/config'`
-  - **Fix:** Ensure you have `@expo/config` installed or use `app.json` instead of `app.config.ts` if you don't need dynamic config.
-- **Gotcha:** Forgetting to clear the bundler cache when changing config.
-  - **Fix:** Run `npx expo start -c`.
+| Error | Cause | Fix |
+|-------|-------|-----|
+| `expo init is not a command` | `expo init` removed in SDK 50+ | Use `npx create-expo-app@latest` |
+| `Unable to resolve module` | Metro cache stale | `npx expo start --clear` |
+| `SDK version mismatch` | Expo Go version != project SDK | Update Expo Go, or run `npx expo install --fix` |
+| `Command not found: eas` | EAS CLI not installed globally | `npm install -g eas-cli` |
+| `Could not connect to development server` | Firewall or wrong network | Use `--tunnel` flag or check wifi |
+| `ios/android folder missing` | Managed workflow (expected) | Run `npx expo prebuild` only if you need them |
+
+---
 
 ## ⚡ Shortcuts & Speed Tricks
 
-- **Clear Cache:** `npx expo start -c` (fixes 90% of weird Metro issues).
-- **Open in iOS Simulator:** Press `i` in the terminal running Expo.
-- **Open in Android Emulator:** Press `a` in the terminal running Expo.
+- **Skip Expo Go entirely** for production apps — go straight to Dev Client with `expo-dev-client`.
+- **Path aliases** (`@/components/X`) work out of the box. Don't waste time configuring Babel for this.
+- **`npx expo install`** always picks the right version for your SDK. Never use raw `npm install` for Expo-compatible packages.
+- **`npx expo doctor`** catches 90% of config issues. Run it before filing a bug.
+- **Press `j`** in the Metro terminal to open the debugger. Way faster than setting up Flipper.
