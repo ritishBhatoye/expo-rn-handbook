@@ -10,6 +10,7 @@ The single deepest repository for Expo & React Native mastery. Zero fluff. Pure 
 ---
 
 ## 📋 Table of Contents
+- [📚 INTERVIEW PREP GUIDE](#-interview-prep-guide)
 - [🟢 LEVEL 0 — ABSOLUTE BEGINNER](#-level-0--absolute-beginner)
 - [🟡 LEVEL 1 — BEGINNER](#-level-1--beginner)
 - [🟠 LEVEL 2 — INTERMEDIATE](#-level-2--intermediate)
@@ -19,6 +20,27 @@ The single deepest repository for Expo & React Native mastery. Zero fluff. Pure 
 - [⚡ MASTER COMMAND REFERENCE](#-master-command-reference)
 - [✂️ THE SNIPPET VAULT](#-the-snippet-vault)
 - [🐛 DEBUGGING GOLDBANK](#-debugging-goldbank)
+
+---
+
+# 📚 INTERVIEW PREP GUIDE
+
+> A comprehensive 10-phase interview preparation guide covering everything from fundamentals to senior-level topics.
+
+## 📖 Phases
+
+| Phase | Topic | File |
+|-------|-------|------|
+| 1 | Core React & React Native Fundamentals | [PHASE-1-core-react-fundamentals.md](interview-prep/PHASE-1-core-react-fundamentals.md) |
+| 2 | Expo & Platform Integrations | [PHASE-2-expo-platform-integrations.md](interview-prep/PHASE-2-expo-platform-integrations.md) |
+| 3 | Performance & Optimization | [PHASE-3-performance-optimization.md](interview-prep/PHASE-3-performance-optimization.md) |
+| 4 | Testing & QA | [PHASE-4-testing-qa.md](interview-prep/PHASE-4-testing-qa.md) |
+| 5 | Deployment & Production | [PHASE-5-deployment-production.md](interview-prep/PHASE-5-deployment-production.md) |
+| 6 | Architecture & Patterns | [PHASE-6-architecture-patterns.md](interview-prep/PHASE-6-architecture-patterns.md) |
+| 7 | Case Studies & Failure Analysis | [PHASE-7-case-studies-failure-analysis.md](interview-prep/PHASE-7-case-studies-failure-analysis.md) |
+| 8 | Interview & Whiteboard Prep | [PHASE-8-interview-whiteboard-prep.md](interview-prep/PHASE-8-interview-whiteboard-prep.md) |
+| 9 | Visuals & Documentation | [PHASE-9-visuals-documentation.md](interview-prep/PHASE-9-visuals-documentation.md) |
+| 10 | Roadmap & Level Checklist | [PHASE-10-roadmap-checklist.md](interview-prep/PHASE-10-roadmap-checklist.md) |
 
 ---
 
